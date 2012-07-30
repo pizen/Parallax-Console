@@ -4,19 +4,31 @@ import serial
 import sys
 import curses
 
-scr = curses.initscr()
+usage = "USAGE: console.py <serial device>"
 
-def main(scr):
+if len(sys.argv) != 2:
+	print usage
+	exit()
+
+port = sys.argv[1]
+	
+try:
 	ser = serial.Serial(
-		port='/dev/tty.usbserial-AH01N2HV',
+		port=port,
 		baudrate=57600,
 		parity=serial.PARITY_NONE,
 		stopbits=serial.STOPBITS_ONE,
 		bytesize=serial.EIGHTBITS,
 	)
+except serial.serialutil.SerialException,reason:
+	print "ERROR: %s" % reason
+	exit()
 
-	ser.isOpen()
+ser.isOpen()
 
+scr = curses.initscr()
+
+def main(scr):
 	out = ''
 	lines = ['']
 	line_no = 0
